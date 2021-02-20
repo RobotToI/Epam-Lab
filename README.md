@@ -1,4 +1,13 @@
 # Epam-Lab
-This repositry created for my entry-level course in EPAM Systems.
-This line was added for give an understanding of pull-requesting
-Project goal will be bellow soon:
+##### Show-project for EPAM Systems<br>
+#### The goal is to get understanding of different aspects of Software Development
+Such as:
+1. Python tools
+2. Specification and Documents
+3. Web framework: Flask
+4. CI/CD
+5. DB
+
+The end of the project I'm going to prepare to an Interview. And I hope got a job!
+
+***Let's roll!***

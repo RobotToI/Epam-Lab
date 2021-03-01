@@ -39,4 +39,9 @@ venv/
 ENV/
 .vscode
 
+#PyCharm .idea
+.idea
+idea/
+.idea/
+
 

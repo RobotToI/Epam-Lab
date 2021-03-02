@@ -2,32 +2,28 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def get_html_file(url, table_name='covid-statistics'):
+def get_information(url="https://en.wikipedia.org/wiki/Template:COVID-19_pandemic_data"):
     """
-    DOCSTRING: Writes all HTML code to file
-    INPUT: URL Address, and name of table
-    OUTPUT: None, just existing file with HTML
-    """
-    response_html = requests.get(url)
-    with open(str(table_name + '.html'), 'wb') as output_file:
-        output_file.write(response_html.text.encode('UTF-8'))
-
-
-def get_information(file_name):
-    """
-        DOCSTRING: Gets all statistics information from html file
-        INPUT: name of html file
+        DOCSTRING: Gets all statistics information from response content
+        INPUT: URL link
         OUTPUT: hash table with another hash table in there like: Belarus: {Total : IntValue,
                                                                             Number of death : IntValue,
                                                                              etc...}
     """
-    with open(file_name, 'rb') as html:
-        soup = BeautifulSoup(html, 'lxml')
-    # table_header = dict()
-    countries = soup.find('tbody', class_='ppcUXd')
+    response = requests.get(url).content
+    soup = BeautifulSoup(response, 'lxml')
+    table_header = dict()
+    countries = soup.find('tbody')
     for each in countries.find_all('tr'):
-        print(each.text)
+        buff = each.text.split()
+        if 'No' in buff:
+            buff = buff[:-1]
+        name = ' '.join(buff[:-4])
+        have_brackets = name.find('[')
+        if have_brackets > 0:
+            name = name[:have_brackets]
+        table_header[name] = tuple(buff[-4:-1])
 
 
 if __name__ == '__main__':
-    get_information('covid-statistics.html')
+    get_information()

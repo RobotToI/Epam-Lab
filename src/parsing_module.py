@@ -1,5 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
+from dataclasses import dataclass
+
+
+@dataclass
+class CountryInfo:
+    name: str
+    cases: str
+    deaths: str
+    recovered: [int, str] = 'No data'
 
 
 def get_information(url="https://en.wikipedia.org/wiki/Template:COVID-19_pandemic_data"):
@@ -10,19 +19,21 @@ def get_information(url="https://en.wikipedia.org/wiki/Template:COVID-19_pandemi
                                                                             Number of death : IntValue,
                                                                              etc...}
     """
-    response = requests.get(url).content
-    soup = BeautifulSoup(response, 'lxml')
+    soup = BeautifulSoup(requests.get(url).content, 'lxml')
     table_header = dict()
-    countries = soup.find('tbody')
-    for each in countries.find_all('tr'):
-        buff = each.text.split()
-        if 'No' in buff:
-            buff = buff[:-1]
-        name = ' '.join(buff[:-4])
-        have_brackets = name.find('[')
-        if have_brackets > 0:
-            name = name[:have_brackets]
-        table_header[name] = tuple(buff[-4:-1])
+    countries = soup.find('tbody').find_all('tr')
+    for each in countries:
+        text_presentation = each.text.split()[:-1]
+        if 'No' in text_presentation:
+            text_presentation = text_presentation[:-2]
+            text_presentation.append('No data')
+        name = ' '.join(text_presentation[:-3])
+        bracket_index = name.find('[')
+        if bracket_index > 0:
+            name = name[:bracket_index]
+        g = CountryInfo(name, text_presentation[-3], text_presentation[-2], text_presentation[-1])
+        if name == 'Tanzania':
+            break
 
 
 if __name__ == '__main__':
